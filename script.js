@@ -1,3 +1,4 @@
+const resultDisplay = document.querySelector(".result");
 const grid = document.querySelector(".grid");
 
 const width = 15;
@@ -76,6 +77,42 @@ function moveInvaders() {
   }
 
   draw();
+
+  if (squares[currentShooterIndex].contains("invader", "shooter")) {
+    resultDisplay.innerHTML = "You lose.";
+    clearInterval(invadersID);
+  }
+
+  for (let i = 0; i < alienInvaders.length; i++) {
+    if (alienInvaders[i] > squares.length) {
+      resultDisplay.innerHTML = "You lose.";
+      clearInterval(invadersID);
+    }
+  }
 }
 
 invadersID = setInterval(moveInvaders, 500);
+
+function shoot(e) {
+  let laserID;
+  let currentLaserIndex = currentShooterIndex;
+
+  function moveLaser() {
+    squares[currentLaserIndex].classList.remove("laser");
+    currentLaserIndex -= width;
+    squares[currentLaserIndex].classList.add("laser");
+
+    if (squares[currentLaserIndex].classList.contains("invader")) {
+      squares[currentLaserIndex].classList.remove("invader");
+      squares[currentLaserIndex].classList.remove("laser");
+      squares[currentLaserIndex].classList.add("boom");
+    }
+  }
+
+  switch (e.key) {
+    case " ":
+      laserID = setInterval(moveLaser, 100);
+  }
+}
+
+document.addEventListener("keydown", shoot);
